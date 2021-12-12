@@ -83,8 +83,8 @@ def predict():
         # de la misma. Complete los campos de "rpse" con los valores
         # obtenidos.
         #################################################################
-        text_data = None
-        prediction, score = None, None
+        text_data = request.args.get('text')
+        prediction, score = model_predict(text_data)
         #################################################################
         rpse = {
             "text": text_data,
