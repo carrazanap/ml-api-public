@@ -18,6 +18,13 @@ def _send_message(text_data):
     #################################################################
     from external import redis_client, kafka_producer
     job_id = str(uuid4())
+
+    job_data = {
+        'id': job_id,
+        'text': text_data
+    }
+
+    kafka_producer.send(settings.KAFKA_TOPIC, job_data)
     #################################################################
     return job_id
 
@@ -34,7 +41,15 @@ def _receive_response(job_id):
     #     4. Eliminar los resultados de la BD temporal.
     #################################################################
     from external import redis_client, kafka_producer
-    prediction, score = None, None
+    response = redis_client.get(job_id)
+    if response is None:
+        raise ValueError
+
+    response = serializers.deserialize_json(response)
+    prediction = response['prediction']
+    score = response['score']
+
+    redis_client.delete(job_id)
     #################################################################
     return prediction, score
 

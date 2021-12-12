@@ -67,8 +67,8 @@ def predict(text):
     # Luego utilice la función "sentiment_from_score" de este módulo
     # para obtener el sentimiento ("sentiment") a partir del score.
     ####################################################################
-    score = None
-    sentiment = None
+    score = model.predict(text)
+    sentiment = sentiment_from_score(score)
     # ADDING EXTRA TIME TO SIMULATE A HEAVY PREDICTION
     # import time
     # time.sleep(3)
@@ -96,7 +96,11 @@ def classify_process():
         #       respuesta. Recuerde usar como "key" el "job_id".
         #
         ##############################################################
-        pass
+        job_id = q['id']
+        sentiment, score = predict(q['text'])
+
+        response = {'prediction': sentiment, 'score': score}
+        redis_client.set(job_id, serializers.serialize_json(response))
         ##############################################################
 
 if __name__ == "__main__":
