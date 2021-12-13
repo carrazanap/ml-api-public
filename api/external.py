@@ -20,7 +20,7 @@ kafka_producer = kafka.KafkaProducer(
 
 kafka_consumer = kafka.KafkaConsumer(
     settings.KAFKA_TOPIC,
-    value_serializer = serializers.deserialize_json,
+    value_deserializer = serializers.deserialize_json,
     bootstrap_servers = settings.KAFKA_SERVERS,
     auto_offset_reset = 'earliest',
     group_id = settings.KAFKA_TOPIC
